@@ -1,0 +1,3 @@
+class AbstractSender:
+    pass
+    

@@ -1,43 +1,97 @@
 from abc import ABC, abstractmethod
-import asyncio
 from datetime import datetime
 
 from fastapi import WebSocket
+from loguru import logger
 
 
 class AbstractSender(ABC):
-    def __init__(self, framerate: float = 10):
-        self._delay: float = 1 / framerate
-        self.__connections: list[WebSocket] = []
+    """
+    An abstract base class for WebSocket message senders.
+
+    This class provides a framework for sending structured JSON messages to connected WebSocket clients.
+    Subclasses must implement the `event_name` and `create_message_data` methods.
+
+    Attributes:
+        _connections (list[WebSocket]): A private list storing active WebSocket connections.
+    """
+
+    def __init__(self):
+        """
+        Initializes the sender with an empty list of WebSocket connections.
+        """
+        self._connections: list[WebSocket] = []
 
     @property
     @abstractmethod
     def event_name(self) -> str:
+        """
+        Abstract property to define the event name.
+
+        Subclasses must override this property to specify the name of the event
+        that will be included in the message payload.
+
+        Returns:
+            str: The event name.
+        """
         raise NotImplementedError("Must specify 'event_name' in inherited Sender")
 
-    async def start(self) -> None:
-        while True:
-            await self.send()
-            await asyncio.sleep(self._delay)
-
     async def send(self) -> None:
-        for connection in self.__connections:
+        """
+        Sends a JSON message to all connected WebSocket clients.
+
+        The message contains the event name, data provided by `create_message_data`,
+        and a timestamp.
+
+        Raises:
+            Exception: If sending fails for any connection.
+        """
+        timestamp = datetime.now().isoformat()
+
+        for connection in self._connections:
             message = {
                 "event": self.event_name,
                 "data": self.create_message_data(),
-                "timestamp": datetime.now().isoformat()
+                "timestamp": timestamp
             }
 
-            await connection.send_json(message)
+            try:
+                await connection.send_json(message)
+            except Exception as e:
+                logger.error(f"Failed to send message: {e}")
 
     @abstractmethod
     def create_message_data(self) -> dict[str, [str, dict]]:
+        """
+        Abstract method to create message data.
+
+        Subclasses must implement this method to generate the content of the message.
+
+        Returns:
+            dict[str, [str, dict]]: The message payload structure.
+        """
         raise NotImplementedError()
 
     async def add_connection(self, websocket: WebSocket) -> None:
-        self.__connections.append(websocket)
+        """
+        Adds a WebSocket connection to the sender.
+
+        Args:
+            websocket (WebSocket): The WebSocket connection to be added.
+        """
+        if websocket not in self._connections:
+            self._connections.append(websocket)
 
     async def remove_connection(self, websocket: WebSocket) -> None:
-        self.__connections.remove(websocket)
+        """
+        Removes a WebSocket connection from the sender.
 
+        Args:
+            websocket (WebSocket): The WebSocket connection to be removed.
+
+        Raises:
+            ValueError: If the WebSocket connection is not found in the list.
+        """
+        if websocket in self._connections:
+            self._connections.remove(websocket)
     

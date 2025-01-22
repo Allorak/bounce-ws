@@ -1,3 +1,4 @@
+import datetime
 from typing import Optional, Any
 
 from loguru import logger
@@ -21,6 +22,7 @@ class HandlerOrchestrator:
         Initializes the orchestrator with an empty handler registry.
         """
         self._handlers_dict: dict[str, AbstractHandler] = dict()
+        self._last_event_timestamp: dict[str, datetime.datetime] = dict()
 
     @property
     def registered_events(self) -> list[str]:
@@ -71,6 +73,7 @@ class HandlerOrchestrator:
             return
 
         self._handlers_dict[handler.event_name] = handler
+        self._last_event_timestamp[handler.event_name] = datetime.datetime.now()
 
     def unregister_handler(self, handler: AbstractHandler) -> None:
         """
@@ -95,6 +98,7 @@ class HandlerOrchestrator:
             return
 
         del self._handlers_dict[handler.event_name]
+        del self._last_event_timestamp[handler.event_name]
 
     def handle_message(self, message: dict[str, Any]) -> None:
         """
@@ -116,6 +120,18 @@ class HandlerOrchestrator:
             logger.info("Received message without 'event' specified")
             return
 
+        timestamp_iso = message.get("timestamp")
+
+        if timestamp_iso is None:
+            logger.info("Received message without 'timestamp' specified")
+            return
+
+        event_time = datetime.datetime.fromisoformat(timestamp_iso)
+
+        if event_time < self._last_event_timestamp[event_name]:
+            logger.info("Ignoring not synchronised event received")
+            return
+
         handler = self._handlers_dict.get(event_name)
 
         if handler is None:
@@ -124,3 +140,7 @@ class HandlerOrchestrator:
 
         data = message.get('data', dict())
         handler.handle(data)
+
+    def refresh(self):
+        for event in self._last_event_timestamp.keys():
+            self._last_event_timestamp[event] = datetime.datetime.now()

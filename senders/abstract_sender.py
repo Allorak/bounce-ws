@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
+from typing import Any
 
 from fastapi import WebSocket
 from loguru import logger
@@ -61,7 +62,7 @@ class AbstractSender(ABC):
                 logger.error(f"Failed to send message: {e}")
 
     @abstractmethod
-    def create_message_data(self) -> dict[str, [str, dict]]:
+    def create_message_data(self) -> dict[str, Any]:
         """
         Abstract method to create message data.
 

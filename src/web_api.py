@@ -24,7 +24,6 @@ class WebApi:
         _host (str): The host address for the server.
         _port (int): The port number for the server.
         _name (str): A name identifier for logging purposes.
-        __connections (list[WebSocket]): A list to store active WebSocket connections.
         __sender_orchestrator (SenderOrchestrator): Manages sender instances.
         __handler_orchestrator (HandlerOrchestrator): Handles incoming WebSocket messages.
     """
@@ -52,7 +51,6 @@ class WebApi:
         self._route: str = route
         self._name: str = name
 
-        self.__connections: list[WebSocket] = []
         self.__sender_orchestrator: SenderOrchestrator = sender_orchestrator
         self.__handler_orchestrator: HandlerOrchestrator = handler_orchestrator
 

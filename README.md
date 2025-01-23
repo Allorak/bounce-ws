@@ -24,7 +24,7 @@ pip install -r requirements.txt
 Alternatively you can use pip to install:
 
 ```bash
-pip install https://git.miem.hse.ru/vt3/websocket-api.git
+pip install git+https://git.miem.hse.ru/vt3/websocket-api.git
 ```
 
 ## Core ideas
@@ -42,3 +42,7 @@ Framework provides following options for message exchange:
 - Send message using AbstractSender calling "send" method manually
 - Send message using TimedAbstractSender calling "send" method repeatedly
 - Handle incoming messages with AbstractHandler, discarding messages of the same event with timestamp larger than last handled
+
+## Example
+
+Usage examples can be found in `examples/` folder

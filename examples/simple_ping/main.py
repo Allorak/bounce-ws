@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
-from src import WebApi
-from src.senders import SenderOrchestrator
-from src.handlers import HandlerOrchestrator
+from ws_framework import WebApi
+from ws_framework.senders import SenderOrchestrator
+from ws_framework.handlers import HandlerOrchestrator
 
 from senders import PingSender
 from senders import TimedPingSender

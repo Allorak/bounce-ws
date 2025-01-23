@@ -2,8 +2,8 @@ from typing import Any
 
 from loguru import logger
 
-from src.handlers import AbstractHandler
-from src.senders import AbstractSender
+from ws_framework.handlers import AbstractHandler
+from ws_framework.senders import AbstractSender
 
 class PingHandler(AbstractHandler):
     def __init__(self, callback_sender: AbstractSender):

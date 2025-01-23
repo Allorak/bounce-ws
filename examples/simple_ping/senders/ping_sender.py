@@ -1,6 +1,6 @@
 from typing import Any
 
-from src.senders import AbstractSender
+from ws_framework.senders import AbstractSender
 
 class PingSender(AbstractSender):
     def __init__(self):

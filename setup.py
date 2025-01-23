@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="ws-framework",
+    name="ws_framework",
     version="0.8.0",
     author="Mike Moiseev",
     author_email="mvmoiseev@miem.hse.ru",

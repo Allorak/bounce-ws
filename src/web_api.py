@@ -8,9 +8,8 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from loguru import logger
 import uvicorn
 
-from senders import SenderOrchestrator
-from handlers import HandlerOrchestrator
-from senders.abstract_timed_sender import AbstractTimedSender
+from .senders import AbstractTimedSender, SenderOrchestrator
+from .handlers import HandlerOrchestrator
 
 
 class WebApi:
@@ -96,7 +95,7 @@ class WebApi:
         """
         await websocket.accept()
 
-        self.__connections.append(websocket)
+        self.__sender_orchestrator.add_connection(websocket)
 
         try:
             while True:
@@ -108,9 +107,9 @@ class WebApi:
                     logger.error("Invalid JSON received")
                     continue
 
-                self.__handler_orchestrator.handle_message(message)
+                await self.__handler_orchestrator.handle_message(message)
         except WebSocketDisconnect as _:
-            self.__connections.remove(websocket)
+            self.__sender_orchestrator.remove_connection(websocket)
 
 
     @asynccontextmanager

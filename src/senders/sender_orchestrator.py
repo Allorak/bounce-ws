@@ -1,6 +1,7 @@
 from typing import Optional
 
 from loguru import logger
+from starlette.websockets import WebSocket
 
 from src.senders import AbstractSender
 
@@ -97,3 +98,11 @@ class SenderOrchestrator:
             return
 
         del self._senders_dict[sender.event_name]
+
+    def add_connection(self, websocket: WebSocket):
+        for sender in self._senders_dict.values():
+            sender.add_connection(websocket)
+
+    def remove_connection(self, websocket: WebSocket):
+        for sender in self._senders_dict.values():
+            sender.remove_connection(websocket)

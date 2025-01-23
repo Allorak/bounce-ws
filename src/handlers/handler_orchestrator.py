@@ -100,7 +100,7 @@ class HandlerOrchestrator:
         del self._handlers_dict[handler.event_name]
         del self._last_event_timestamp[handler.event_name]
 
-    def handle_message(self, message: dict[str, Any]) -> None:
+    async def handle_message(self, message: dict[str, Any]) -> None:
         """
         Processes an incoming message and routes it to the appropriate handler.
 
@@ -139,7 +139,7 @@ class HandlerOrchestrator:
             return
 
         data = message.get('data', dict())
-        handler.handle(data)
+        await handler.handle(data)
 
     def refresh(self):
         for event in self._last_event_timestamp.keys():

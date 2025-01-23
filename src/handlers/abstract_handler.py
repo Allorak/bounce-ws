@@ -43,7 +43,7 @@ class AbstractHandler(ABC):
         raise NotImplementedError("Must specify 'event_name' in inherited Handler")
 
     @abstractmethod
-    def handle(self, data: dict[str, Any]) -> None:
+    async def handle(self, data: dict[str, Any]) -> None:
         """
         Abstract method to handle incoming event data.
 

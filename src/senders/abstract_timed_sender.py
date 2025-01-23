@@ -17,13 +17,12 @@ class AbstractTimedSender(AbstractSender, ABC):
         _is_active (bool): A flag indicating whether the sender is currently active.
     """
 
-    def __init__(self, framerate: float = 10):
+    def __init__(self, framerate: float):
         """
         Initializes the timed sender with a given frame rate.
 
         Args:
             framerate (float): The number of times messages should be sent per second.
-                               Defaults to 10 (0.1 seconds interval).
         """
         super().__init__()
 

@@ -3,7 +3,7 @@ from typing import Optional, Any
 
 from loguru import logger
 
-from src.handlers import AbstractHandler
+from ws_framework.handlers import AbstractHandler
 
 
 class HandlerOrchestrator:

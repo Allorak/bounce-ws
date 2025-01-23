@@ -68,12 +68,12 @@ class WebApi:
         self.__thread = Thread(target=self.__server.run, daemon=True)
         self.__thread.start()
 
+        logger.info(f'{self._name} server starting at {self._host}:{self._port}{self._route}')
+
         try:
             self.__thread.join()
         except KeyboardInterrupt:
             self.stop()
-
-        logger.info(f'{self._name} server started at {self._host}:{self._port}/{self._route}')
 
 
     def stop(self) -> None:

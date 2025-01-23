@@ -3,7 +3,7 @@ from typing import Optional
 from loguru import logger
 from starlette.websockets import WebSocket
 
-from src.senders import AbstractSender
+from ws_framework.senders import AbstractSender
 
 class SenderOrchestrator:
     """

@@ -73,7 +73,7 @@ class AbstractSender(ABC):
         """
         raise NotImplementedError()
 
-    async def add_connection(self, websocket: WebSocket) -> None:
+    def add_connection(self, websocket: WebSocket) -> None:
         """
         Adds a WebSocket connection to the sender.
 
@@ -83,7 +83,7 @@ class AbstractSender(ABC):
         if websocket not in self._connections:
             self._connections.append(websocket)
 
-    async def remove_connection(self, websocket: WebSocket) -> None:
+    def remove_connection(self, websocket: WebSocket) -> None:
         """
         Removes a WebSocket connection from the sender.
 

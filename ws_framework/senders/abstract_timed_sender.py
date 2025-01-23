@@ -30,7 +30,7 @@ class AbstractTimedSender(AbstractSender, ABC):
             raise ValueError("Framerate must be greater than zero.")
 
         self._delay: float = 1 / framerate
-        self._is_active: bool = False
+        self._is_active: bool = True
 
 
     async def start(self) -> None:

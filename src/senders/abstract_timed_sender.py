@@ -1,7 +1,7 @@
 from abc import ABC
 import asyncio
 
-from senders import AbstractSender
+from src.senders import AbstractSender
 
 
 class AbstractTimedSender(AbstractSender, ABC):

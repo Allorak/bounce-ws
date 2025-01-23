@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from senders import AbstractSender
+from src.senders import AbstractSender
 
 
 class AbstractHandler(ABC):

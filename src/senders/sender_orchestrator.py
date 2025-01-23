@@ -2,7 +2,7 @@ from typing import Optional
 
 from loguru import logger
 
-from senders import AbstractSender
+from src.senders import AbstractSender
 
 class SenderOrchestrator:
     """

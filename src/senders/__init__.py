@@ -8,4 +8,4 @@ __all__ = [
     "SenderOrchestrator"
 ]
 
-__version__ = "0.6.0"
+__version__ = "0.8.0"

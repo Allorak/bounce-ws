@@ -49,6 +49,7 @@ class WebApi:
 
         self._host: str = host
         self._port: int = port
+        self._route: str = route
         self._name: str = name
 
         self.__connections: list[WebSocket] = []
@@ -68,7 +69,7 @@ class WebApi:
 
         self.__thread = Thread(target=self.__server.run, daemon=True)
         self.__thread.start()
-        logger.info(f'{self._name} server started')
+        logger.info(f'{self._name} server starting at {self._host}:{self._port}/{self._route}')
 
 
     def stop(self) -> None:

@@ -24,7 +24,7 @@ def main():
     handler_orchestrator.register_handler(ping_handler)
 
     api = WebApi(fastapi_app, sender_orchestrator, handler_orchestrator)
-    api.start()
+    api.start(background=False)
 
 if __name__ == '__main__':
     main()

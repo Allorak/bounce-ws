@@ -13,6 +13,5 @@ class PingHandler(AbstractHandler):
     def event_name(self) -> str:
         return "ping"
 
-    async def handle(self, data: dict[str, Any]) -> None:
+    def process_data(self, data: dict[str, Any]) -> None:
         logger.info("Received ping message")
-        await self._callback_sender.send()

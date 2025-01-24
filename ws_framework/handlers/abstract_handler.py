@@ -45,7 +45,23 @@ class AbstractHandler(ABC):
     @abstractmethod
     async def handle(self, data: dict[str, Any]) -> None:
         """
-        Abstract method to handle incoming event data.
+        Method to handle incoming event data.
+
+        Calls abstract 'process_data' that must be implemented in inherited class
+
+        Args:
+            data (dict): The event data received from the WebSocket connection.
+        """
+
+        self.process_data(data)
+
+        if self._callback_sender is not None:
+            await self._callback_sender.send()
+
+    @abstractmethod
+    def process_data(self, data: dict[str, Any]) -> None:
+        """
+        Abstract method to process incoming event data
 
         Subclasses must implement this method to process the incoming data and
         perform necessary actions.
@@ -56,4 +72,4 @@ class AbstractHandler(ABC):
         Raises:
             NotImplementedError: If the subclass does not implement this method.
         """
-        raise NotImplementedError("Must define 'handle' behaviour in inherited Handler")
+        raise NotImplementedError("Must define 'process_data' behaviour in inherited Handler")

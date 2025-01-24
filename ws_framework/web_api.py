@@ -3,6 +3,8 @@ import json
 from contextlib import asynccontextmanager
 from threading import Thread
 from typing import Optional
+import traceback
+import sys
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from loguru import logger
@@ -58,9 +60,29 @@ class WebApi:
         self.__server: Optional[uvicorn.Server] = None
 
 
-    def start(self) -> None:
+    def start(self, background: bool = False) -> None:
         """
         Starts the WebSocket server using Uvicorn in a separate thread.
+
+        Args:
+            background (bool): If False (default), the method blocks execution until the server stops.
+                               If True, the server runs in the background, allowing other tasks to proceed.
+
+        Behavior:
+            - When `background` is set to False, the method blocks the main thread until
+              interrupted (e.g., via Ctrl+C), at which point the server is stopped gracefully.
+            - When `background` is set to True, the server runs in a separate daemon thread,
+              and control returns to the caller immediately.
+
+        Raises:
+            KeyboardInterrupt: If interrupted manually when running in blocking mode.
+
+        Example:
+            # Start the server and block execution
+            server.start()
+
+            # Start the server in background mode
+            server.start(background=True)
         """
         config = uvicorn.Config(self._app, host=self._host, port=self._port)
         self.__server = uvicorn.Server(config)
@@ -70,10 +92,11 @@ class WebApi:
 
         logger.info(f'{self._name} server starting at {self._host}:{self._port}{self._route}')
 
-        try:
-            self.__thread.join()
-        except KeyboardInterrupt:
-            self.stop()
+        if background == False:
+            try:
+                self.__thread.join()
+            except KeyboardInterrupt:
+                self.stop()
 
 
     def stop(self) -> None:
@@ -132,16 +155,35 @@ class WebApi:
             None
         """
         # Startup phase, executes before serving messages
-        tasks = [asyncio.create_task(sender.start()) for sender in self.__sender_orchestrator.senders
-                                                     if isinstance(sender, AbstractTimedSender)]
+        async def safe_start(sender):
+            try:
+                await sender.start()
+            except Exception as e:
+                logger.error(f"Error in sender {sender}: {e}")
+                traceback.print_exc(file=sys.stdout)
 
+        tasks = []
+        for sender in self.__sender_orchestrator.senders:
+            if isinstance(sender, AbstractTimedSender):
+                task = asyncio.create_task(safe_start(sender))
+                tasks.append(task)
+
+        # Yield is for the working state of the app
         yield
-
         # Shutdown phase, executes when the application is shutting down
-        for task in tasks:
+
+        done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_EXCEPTION)
+
+        for task in done:
+            if e := task.exception():
+                logger.error(f"Task failed with: {e}")
+                traceback.print_exception(type(e), e, task.get_coro().cr_frame)
+                raise e
+
+        for task in pending:
             task.cancel()
             try:
-                await task
+                await asyncio.wait_for(task, timeout=5)
             except asyncio.CancelledError:
                 pass
 

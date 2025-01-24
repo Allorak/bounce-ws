@@ -95,4 +95,3 @@ class AbstractSender(ABC):
         """
         if websocket in self._connections:
             self._connections.remove(websocket)
-    

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="ws_framework",
-    version="0.9.1",
+    version="0.9.3",
     author="Mike Moiseev",
     author_email="mvmoiseev@miem.hse.ru",
     description="A simple framework for websocket event-based messaging using flask websockets under the hood",

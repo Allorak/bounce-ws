@@ -92,11 +92,13 @@ class WebApi:
 
         logger.info(f'{self._name} server starting at {self._host}:{self._port}{self._route}')
 
-        if background == False:
-            try:
-                self.__thread.join()
-            except KeyboardInterrupt:
-                self.stop()
+        if background:
+            return
+            
+        try:
+            self.__thread.join()
+        except KeyboardInterrupt:
+            self.stop()
 
 
     def stop(self) -> None:

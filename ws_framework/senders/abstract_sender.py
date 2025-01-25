@@ -50,10 +50,10 @@ class AbstractSender(ABC):
         timestamp = datetime.now().isoformat()
 
         message = {
-                "event": self.event_name,
-                "data": self.create_message_data(),
-                "timestamp": timestamp
-            }
+            "event": self.event_name,
+            "data": self.create_message_data(),
+            "timestamp": timestamp
+        }
 
         for connection in self._connections:
             try:

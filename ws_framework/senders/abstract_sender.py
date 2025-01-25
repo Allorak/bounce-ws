@@ -49,13 +49,13 @@ class AbstractSender(ABC):
         """
         timestamp = datetime.now().isoformat()
 
-        for connection in self._connections:
-            message = {
+        message = {
                 "event": self.event_name,
                 "data": self.create_message_data(),
                 "timestamp": timestamp
             }
 
+        for connection in self._connections:
             try:
                 await connection.send_json(message)
             except Exception as e:

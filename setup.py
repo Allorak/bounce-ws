@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="ws_framework",
-    version="0.9.5",
+    version="0.9.6",
     author="Mike Moiseev",
     author_email="mvmoiseev@miem.hse.ru",
     description="A simple framework for websocket event-based messaging using flask websockets under the hood",
@@ -20,7 +20,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Development Status :: 4 - Beta",
-        "Framework :: Flask",
+        "Framework :: FastAPI",
         "Natural Language :: English"
     ],
     python_requires='>=3.8'

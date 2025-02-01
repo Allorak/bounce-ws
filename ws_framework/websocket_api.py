@@ -2,7 +2,7 @@ import asyncio
 import json
 from contextlib import asynccontextmanager
 from threading import Thread
-from typing import Optional
+from typing import Optional, Any, AsyncGenerator
 import traceback
 import sys
 
@@ -143,7 +143,7 @@ class WebSocketApi:
 
 
     @asynccontextmanager
-    async def lifespan(self, app: FastAPI) -> None:
+    async def lifespan(self, app: FastAPI) -> AsyncGenerator[Any, Any]:
         """
         Manages the startup and shutdown phases of the FastAPI application.
 

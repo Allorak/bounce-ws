@@ -1,7 +1,7 @@
-from .web_api import WebApi
+from .websocket_api import WebSocketApi
 
 __all__ = [
-    "WebApi"
+    "WebSocketApi"
 ]
 
 __version__ = "0.9.6"

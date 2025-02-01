@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from ws_framework import WebApi
+from ws_framework import WebSocketApi
 from ws_framework.senders import SenderOrchestrator
 from ws_framework.handlers import HandlerOrchestrator
 
@@ -23,7 +23,7 @@ def main():
     handler_orchestrator = HandlerOrchestrator()
     handler_orchestrator.register_handler(ping_handler)
 
-    api = WebApi(fastapi_app, sender_orchestrator, handler_orchestrator)
+    api = WebSocketApi(fastapi_app, sender_orchestrator, handler_orchestrator)
     api.start(background=False)
 
 if __name__ == '__main__':

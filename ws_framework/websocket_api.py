@@ -14,7 +14,7 @@ from .senders import AbstractTimedSender, SenderOrchestrator
 from .handlers import HandlerOrchestrator
 
 
-class WebApi:
+class WebSocketApi:
     """
     A class to manage a WebSocket API server using FastAPI and Uvicorn.
 

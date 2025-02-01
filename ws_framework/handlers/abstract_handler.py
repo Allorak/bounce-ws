@@ -15,13 +15,13 @@ class AbstractHandler(ABC):
         _callback_sender (AbstractSender): The sender instance used to send responses or
                                           follow-up messages after handling an event.
     """
-    def __init__(self, callback_sender: Optional[AbstractSender]):
+    def __init__(self, callback_sender: Optional[AbstractSender] = None):
         """
         Initializes the handler with a callback sender.
 
         Args:
             callback_sender (AbstractSender): An instance of AbstractSender used to send
-                                              messages after handling the event. Can be None.
+                                              messages after handling the event. Can be None (default).
         """
         self._callback_sender: AbstractSender = callback_sender
 

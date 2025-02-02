@@ -1,5 +1,6 @@
+import asyncio
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any, Optional, Awaitable
 
 from ws_framework.senders import AbstractSender
 
@@ -52,13 +53,17 @@ class AbstractHandler(ABC):
             data (dict): The event data received from the WebSocket connection.
         """
 
-        self.process_data(data)
+        # 'process_data()' method may be asynchronous, so save the result and call 'await' later if needed
+        process =  self.process_data(data)
+
+        if asyncio.iscoroutine(process):
+            await process
 
         if self._callback_sender is not None:
             await self._callback_sender.send()
 
     @abstractmethod
-    def process_data(self, data: dict[str, Any]) -> None:
+    def process_data(self, data: dict[str, Any]) -> Optional[Awaitable[Any]]:
         """
         Abstract method to process incoming event data
 

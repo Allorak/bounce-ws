@@ -109,7 +109,7 @@ class WebSocketApi:
             return
 
         self.__server.should_exit = True
-        self.__thread.join()
+        self.__thread.join(timeout=1)
         logger.info(f'{self._name} server stopped')
 
 

@@ -1,6 +1,7 @@
+import asyncio
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional, Dict, Coroutine, Union
 
 from fastapi import WebSocket
 from loguru import logger
@@ -49,9 +50,14 @@ class AbstractSender(ABC):
         """
         timestamp = datetime.now().isoformat()
 
+        message_data = self.create_message_data()
+
+        if asyncio.iscoroutine(message_data):
+            message_data = await message_data
+
         message = {
             "event": self.event_name,
-            "data": self.create_message_data(),
+            "data": message_data,
             "timestamp": timestamp
         }
 
@@ -62,7 +68,7 @@ class AbstractSender(ABC):
                 logger.error(f"Failed to send message: {e}")
 
     @abstractmethod
-    def create_message_data(self) -> dict[str, Any]:
+    def create_message_data(self) -> Union[Dict[str, Any], Coroutine[Any, Any, Dict[str, Any]]]:
         """
         Abstract method to create message data.
 

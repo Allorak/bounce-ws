@@ -1,7 +1,7 @@
 from typing import Optional
 
 from loguru import logger
-from starlette.websockets import WebSocket
+from fastapi import WebSocket
 
 from ws_framework.senders import AbstractSender
 

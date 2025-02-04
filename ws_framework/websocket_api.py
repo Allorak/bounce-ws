@@ -16,24 +16,16 @@ from .handlers import HandlerOrchestrator
 
 class WebSocketApi:
     """
-    A class to manage a WebSocket API server using FastAPI and Uvicorn.
+    Manages a WebSocket API server using FastAPI and Uvicorn.
 
-    This class handles starting and stopping the server, managing WebSocket connections,
-    and orchestrating sender and handler operations.
-
-    Attributes:
-        _app (FastAPI): The FastAPI application instance.
-        _host (str): The host address for the server.
-        _port (int): The port number for the server.
-        _name (str): A name identifier for logging purposes.
-        __sender_orchestrator (SenderOrchestrator): Manages sender instances.
-        __handler_orchestrator (HandlerOrchestrator): Handles incoming WebSocket messages.
+    This class handles WebSocket connections, message processing, and orchestrates sender
+    and handler operations. It provides methods to start and stop the server.
     """
 
     def __init__(self, app: FastAPI, sender_orchestrator: SenderOrchestrator, handler_orchestrator: HandlerOrchestrator,
                  host: str = "localhost", port: int = 8080, name: str = 'Websocket API', route: str = '/ws') -> None:
         """
-        Initializes the WebApi instance with the given FastAPI app and orchestrators.
+        Initializes the WebSocketApi instance with the given FastAPI app and orchestrators.
 
         Args:
             app (FastAPI): The FastAPI application instance.

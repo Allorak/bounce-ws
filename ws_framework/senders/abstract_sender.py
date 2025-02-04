@@ -1,7 +1,7 @@
 import asyncio
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any, Optional, Dict, Coroutine, Union
+from typing import Any, Dict, Coroutine, Union
 
 from fastapi import WebSocket
 from loguru import logger
@@ -70,12 +70,15 @@ class AbstractSender(ABC):
     @abstractmethod
     def create_message_data(self) -> Union[Dict[str, Any], Coroutine[Any, Any, Dict[str, Any]]]:
         """
-        Abstract method to create message data.
+        Generates the payload for a WebSocket message.
 
-        Subclasses must implement this method to generate the content of the message.
+        This method must be implemented by subclasses to define the structure of the message being sent.
+        It can be either synchronous (returning a dictionary) or asynchronous (returning a coroutine).
 
         Returns:
-            dict[str, [str, dict]]: The message payload structure.
+            Union[Dict[str, Any], Coroutine[Any, Any, Dict[str, Any]]]:
+            - A dictionary representing the message payload if implemented synchronously.
+            - A coroutine resolving to a dictionary if implemented asynchronously.
         """
         raise NotImplementedError()
 

@@ -17,7 +17,7 @@ To install the project, clone the repository and install the required dependenci
 
 ```bash
 git clone https://github.com/Allorak/bounce-ws
-cd websocket-api
+cd bounce-ws
 pip install -r requirements.txt
 ```
 

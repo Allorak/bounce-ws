@@ -16,7 +16,7 @@ This project is a WebSocket-based framework built with FastAPI and Uvicorn, desi
 To install the project, clone the repository and install the required dependencies:
 
 ```bash
-git clone https://git.miem.hse.ru/vt3/websocket-api.git
+git clone https://github.com/Allorak/bounce-ws
 cd websocket-api
 pip install -r requirements.txt
 ```
@@ -24,7 +24,12 @@ pip install -r requirements.txt
 Alternatively you can use pip to install:
 
 ```bash
-pip install git+https://git.miem.hse.ru/vt3/websocket-api.git
+pip install https://github.com/Allorak/bounce-ws
+```
+
+Or install from PyPI index:
+```bash
+pip install bounce-ws
 ```
 
 ## Core ideas

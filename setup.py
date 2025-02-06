@@ -1,14 +1,14 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="bounce_ws-ws",
+    name="bounce_ws",
     version="0.9.9",
     author="Mike Moiseev",
     author_email="mvmoiseev@miem.hse.ru",
     description="A simple framework for websocket event-based messaging using flask websockets under the hood",
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url="https://git.miem.hse.ru/vt3/websocket-api",
+    url="https://github.com/Allorak/bounce-ws",
     packages=find_packages(),
     install_requires=[
         "uvicorn[standard]",

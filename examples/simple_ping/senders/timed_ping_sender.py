@@ -1,6 +1,6 @@
 from typing import Any
 
-from ws_framework.senders import AbstractTimedSender
+from bounce.senders import AbstractTimedSender
 
 class TimedPingSender(AbstractTimedSender):
     def __init__(self, framerate: float = 10):

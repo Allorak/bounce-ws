@@ -3,7 +3,7 @@ from typing import Optional, Any
 
 from loguru import logger
 
-from ws_framework.handlers import AbstractHandler
+from bounce.handlers import AbstractHandler
 
 
 class HandlerOrchestrator:

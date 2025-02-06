@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
-from ws_framework import WebSocketApi
-from ws_framework.senders import SenderOrchestrator
-from ws_framework.handlers import HandlerOrchestrator
+from bounce import WebSocketApi
+from bounce.senders import SenderOrchestrator
+from bounce.handlers import HandlerOrchestrator
 
 from senders import PingSender
 from senders import TimedPingSender

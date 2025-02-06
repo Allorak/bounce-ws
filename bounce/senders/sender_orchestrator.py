@@ -3,7 +3,7 @@ from typing import Optional, Any
 from loguru import logger
 from fastapi import WebSocket
 
-from ws_framework.senders import AbstractSender
+from bounce.senders import AbstractSender
 
 class SenderOrchestrator:
     """

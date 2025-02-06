@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="bounce",
+    name="bounce-ws",
     version="0.9.9",
     author="Mike Moiseev",
     author_email="mvmoiseev@miem.hse.ru",

@@ -2,7 +2,7 @@ import asyncio
 from abc import ABC, abstractmethod
 from typing import Any, Optional, Awaitable
 
-from ws_framework.senders import AbstractSender
+from bounce.senders import AbstractSender
 
 
 class AbstractHandler(ABC):

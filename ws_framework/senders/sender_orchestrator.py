@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any
 
 from loguru import logger
 from fastapi import WebSocket
@@ -99,10 +99,55 @@ class SenderOrchestrator:
 
         del self._senders_dict[sender.event_name]
 
-    def add_connection(self, websocket: WebSocket):
-        for sender in self._senders_dict.values():
-            sender.add_connection(websocket)
+    def subscribe(self, websocket: WebSocket, data: dict[str, Any]) -> None:
+        """
+        Subscribes websocket to the senders with specified events
 
-    def remove_connection(self, websocket: WebSocket):
-        for sender in self._senders_dict.values():
-            sender.remove_connection(websocket)
+        Args:
+            websocket: websocket instance to be subscribed
+            data: contents of the 'subscribe' event message
+        """
+        events: list[str] = data.get("events")
+
+        if events is None:
+            logger.warning('No events specified in "subscribe" event')
+            return
+
+        if "*" in events:
+            for sender in self._senders_dict.values():
+                if not sender.has_connection(websocket):
+                    sender.add_connection(websocket)
+            return
+
+        for event in events:
+            sender = self._senders_dict[event]
+
+            if not sender.has_connection(websocket):
+                sender.add_connection(websocket)
+
+    def unsubscribe(self, websocket: WebSocket, data: dict[str, Any]) -> None:
+        """
+        Unsubscribes websocket from the senders with specified events
+
+        Args:
+            websocket: websocket instance to be unsubscribed
+            data: contents of the 'unsubscribe' event message
+        """
+        events: list[str] = data.get("events")
+
+        if events is None:
+            logger.warning('No events specified in "unsubscribe" event')
+            return
+
+        if "*" in events:
+            for sender in self._senders_dict.values():
+                if sender.has_connection(websocket):
+                    sender.remove_connection(websocket)
+            return
+
+        for event in events:
+            sender = self._senders_dict[event]
+
+            if sender.has_connection(websocket):
+                sender.remove_connection(websocket)
+

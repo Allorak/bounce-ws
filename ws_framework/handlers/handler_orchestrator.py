@@ -15,6 +15,7 @@ class HandlerOrchestrator:
 
     Attributes:
         _handlers_dict (dict[str, AbstractHandler]): A dictionary storing handlers mapped by event names.
+        _last_event_timestamp (dict[str, datetime.datetime]): A dictionary storing timestamps of last event processing
     """
 
     def __init__(self):
@@ -100,7 +101,7 @@ class HandlerOrchestrator:
         del self._handlers_dict[handler.event_name]
         del self._last_event_timestamp[handler.event_name]
 
-    async def handle_message(self, message: dict[str, Any]) -> None:
+    async def handle_message(self, event_name: str, data: dict[str, Any], timestamp: datetime.datetime) -> None:
         """
         Processes an incoming message and routes it to the appropriate handler.
 
@@ -108,27 +109,15 @@ class HandlerOrchestrator:
         If no event is specified or no matching handler is found, appropriate warnings are logged.
 
         Args:
-            message (dict): The message to be processed, expected to contain 'event', 'data' and 'timestamp' keys.
+            event_name (str): The name of the event to process
+            data (dict): The contents of the message
+            timestamp (datetime.datetime): The timestamp of the message's send time
 
         Logs:
             - Info if the message does not contain an 'event' key.
             - Warning if no handler is registered for the specified event.
         """
-        event_name = message.get("event")
-
-        if event_name is None:
-            logger.info("Received message without 'event' specified")
-            return
-
-        timestamp_iso = message.get("timestamp")
-
-        if timestamp_iso is None:
-            logger.info("Received message without 'timestamp' specified")
-            return
-
-        event_time = datetime.datetime.fromisoformat(timestamp_iso)
-
-        if event_time < self._last_event_timestamp[event_name]:
+        if timestamp < self._last_event_timestamp[event_name]:
             logger.info("Ignoring not synchronised event received")
             return
 
@@ -138,9 +127,11 @@ class HandlerOrchestrator:
             logger.warning(f"Received event for {event_name} without corresponding handler registered")
             return
 
-        data = message.get('data', dict())
         await handler.handle(data)
 
-    def refresh(self):
+    def refresh(self) -> None:
+        """
+        Updates all the timings for all events processing
+        """
         for event in self._last_event_timestamp.keys():
             self._last_event_timestamp[event] = datetime.datetime.now()

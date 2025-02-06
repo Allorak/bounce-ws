@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import json
 from contextlib import asynccontextmanager
 from threading import Thread
@@ -117,8 +118,6 @@ class WebSocketApi:
         """
         await websocket.accept()
 
-        self.__sender_orchestrator.add_connection(websocket)
-
         try:
             while True:
                 data = await websocket.receive_text()
@@ -129,10 +128,46 @@ class WebSocketApi:
                     logger.error("Invalid JSON received")
                     continue
 
-                await self.__handler_orchestrator.handle_message(message)
-        except WebSocketDisconnect as _:
-            self.__sender_orchestrator.remove_connection(websocket)
+                try:
+                    event, data, timestamp = self.get_message_info(message)
+                except ValueError:
+                    logger.error("Invalid message contents, can't parse")
+                    continue
 
+                if event == 'subscribe':
+                    self.__sender_orchestrator.subscribe(websocket, data)
+                elif event == 'unsubscribe':
+                    self.__sender_orchestrator.unsubscribe(websocket, data)
+                else:
+                    await self.__handler_orchestrator.handle_message(event, data, timestamp)
+        except WebSocketDisconnect as _:
+            self.__sender_orchestrator.unsubscribe(websocket)
+
+    @staticmethod
+    def get_message_info( message: dict[str, Any]) -> (str, dict[str,Any], datetime.datetime):
+        """
+        Parses incoming WebSocket message and returns event name, contents and timestamp.
+        Args:
+            message: dictionary with message contents, expected to have 'event', and 'timestamp' keys.
+
+        Raises:
+            ValueError: if message doesn't contain 'event', or 'timestamp' key.
+        """
+        event_name = message.get("event")
+
+        if event_name is None:
+            raise ValueError("Received message without 'event' specified")
+
+        timestamp_iso = message.get("timestamp")
+
+        if timestamp_iso is None:
+            raise ValueError("Received message without 'timestamp' specified")
+
+        event_time = datetime.datetime.fromisoformat(timestamp_iso)
+
+        data = message.get("data", dict())
+
+        return event_name, data, event_time
 
     @asynccontextmanager
     async def lifespan(self, app: FastAPI) -> AsyncGenerator[Any, Any]:
@@ -149,11 +184,11 @@ class WebSocketApi:
             None
         """
         # Startup phase, executes before serving messages
-        async def safe_start(sender):
+        async def safe_start(timed_sender: AbstractTimedSender):
             try:
-                await sender.start()
+                await timed_sender.start()
             except Exception as e:
-                logger.error(f"Error in sender {sender}: {e}")
+                logger.error(f"Error in sender {timed_sender}: {e}")
                 traceback.print_exc(file=sys.stdout)
 
         tasks = []

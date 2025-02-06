@@ -15,14 +15,14 @@ class AbstractSender(ABC):
     Subclasses must implement the `event_name` and `create_message_data` methods.
 
     Attributes:
-        _connections (list[WebSocket]): A private list storing active WebSocket connections.
+        _connections (set[WebSocket]): A private set storing active WebSocket connections.
     """
 
     def __init__(self):
         """
         Initializes the sender with an empty list of WebSocket connections.
         """
-        self._connections: list[WebSocket] = []
+        self._connections: set[WebSocket] = set()
 
     @property
     @abstractmethod
@@ -90,7 +90,7 @@ class AbstractSender(ABC):
             websocket (WebSocket): The WebSocket connection to be added.
         """
         if websocket not in self._connections:
-            self._connections.append(websocket)
+            self._connections.add(websocket)
 
     def remove_connection(self, websocket: WebSocket) -> None:
         """
@@ -104,3 +104,14 @@ class AbstractSender(ABC):
         """
         if websocket in self._connections:
             self._connections.remove(websocket)
+
+    def has_connection(self, websocket: WebSocket) -> bool:
+        """
+        Checks if the sender connected to the specified WebSocket.
+        Args:
+            websocket (WebSocket): The WebSocket connection to be checked.
+
+        Returns:
+            bool: if the WebSocket connection is found in the list.
+        """
+        return websocket in self._connections

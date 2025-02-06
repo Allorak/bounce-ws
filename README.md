@@ -38,7 +38,31 @@ The main idea is that client and server use websockets for message exchange with
 }
 ```
 
+For interacting with the server clients firstly have to subscribe to the needed events sending following message:
+```json
+{
+  "event": "subscribe",
+  "data": {
+    "events": [<list of event names to subscribe to>]
+  },
+  "timestamp": "<iso formated send time timestamp without offset>"
+}
+```
+You may specify `"*"` in `"events"` key to subscribe to all events, provided by the server
+
+In a similar way client may unsubscribe from the specified events:
+```json
+{
+  "event": "unsubscribe",
+  "data": {
+    "events": [<list of event names to unsubscribe from>]
+  },
+  "timestamp": "<iso formated send time timestamp without offset>"
+}
+```
+
 Framework provides following options for message exchange:
+- Clients can subscribe to the needed events and unsubscribe from them
 - Send message using AbstractSender calling "send" method manually
 - Send message using TimedAbstractSender calling "send" method repeatedly
 - Handle incoming messages with AbstractHandler, discarding messages of the same event with timestamp larger than last handled

@@ -1,7 +1,7 @@
 from abc import ABC
 import asyncio
 
-from bounce.senders import AbstractSender
+from bounce_ws.senders import AbstractSender
 
 
 class AbstractTimedSender(AbstractSender, ABC):

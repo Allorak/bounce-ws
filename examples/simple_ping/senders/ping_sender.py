@@ -1,6 +1,6 @@
 from typing import Any
 
-from bounce.senders import AbstractSender
+from bounce_ws.senders import AbstractSender
 
 class PingSender(AbstractSender):
     def __init__(self):

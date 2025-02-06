@@ -2,8 +2,8 @@ from typing import Any
 
 from loguru import logger
 
-from bounce.handlers import AbstractHandler
-from bounce.senders import AbstractSender
+from bounce_ws.handlers import AbstractHandler
+from bounce_ws.senders import AbstractSender
 
 class PingHandler(AbstractHandler):
     def __init__(self, callback_sender: AbstractSender):
